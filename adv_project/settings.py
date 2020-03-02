@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
 
-HEROKU_HOST - config("ALLOWED_HOSTS")
+HEROKU_HOST - config('ALLOWED_HOSTS')
 
 ALLOWED_HOSTS = [HEROKU_HOST, "127.0.0.1:3000"]
 
