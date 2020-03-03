@@ -5,7 +5,7 @@
 # procedural generation algorithm and use print_rooms()
 # to see the world.
 import random
-from .models import Room
+# from .models import Room
 print(Room)
 
 

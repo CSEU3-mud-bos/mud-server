@@ -15,14 +15,14 @@ descriptions = ["You have reached the room where the magic happens", "You have r
 
 
 class Room(models.Model):
-    id = models.IntegerField()
+    id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=50, default="DEFAULT TITLE")
     description = models.CharField(
         max_length=500, default="DEFAULT DESCRIPTION")
-    n_to = models.IntegerField(default=0)
-    s_to = models.IntegerField(default=0)
-    e_to = models.IntegerField(default=0)
-    w_to = models.IntegerField(default=0)
+    n_to = models.IntegerField(default=None, blank=True, null=True)
+    s_to = models.IntegerField(default=None, blank=True, null=True)
+    e_to = models.IntegerField(default=None, blank=True, null=True)
+    w_to = models.IntegerField(default=None, blank=True, null=True)
     x = models.IntegerField(default=0)
     y = models.IntegerField(default=0)
 
@@ -171,6 +171,7 @@ class World:
             # Create a room in the given direction
             room = Room(id=room_count, title=random.choice(roomTitles),
                         description=random.choice(descriptions), n_to=self.n_to,  s_to=self.s_to,  e_to=self.e_to, w_to=self.w_to, x=x, y=y)
+            print(room.n_to)
            # print(room.n_to)
             room.save()
 
@@ -186,8 +187,8 @@ class World:
             # Update iteration variables
             previous_room = room
             room_count += 1
-        # for i in self.list1:
-        #     print(i.id)
+        for i in self.list1:
+            print(i.id)
 
 #     def print_rooms(self):
 #         '''
