@@ -5,8 +5,7 @@
 # procedural generation algorithm and use print_rooms()
 # to see the world.
 import random
-# from .models import Room
-print(Room)
+from adventure.models import Room
 
 
 roomTitles = ["Red", "Easter Bunny", "Mamba", "Egg Sandwhich", "Beast", "Gypsy", "Gems", "German Dungeon", "Gulag",
@@ -142,6 +141,7 @@ class World:
             room = Room(id=room_count, title=random.choice(roomTitles),
                         description=random.choice(descriptions), n_to=self.n_to,  s_to=self.s_to,  e_to=self.e_to, w_to=self.w_to, x=x, y=y)
            # print(room.n_to)
+            room.save()
             self.list1.append(room)
 
             # Note that in Django, you'll need to save the room after you create it
