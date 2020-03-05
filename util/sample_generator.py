@@ -5,7 +5,6 @@
 # procedural generation algorithm and use print_rooms()
 # to see the world.
 import random
-from adventure.models import Room
 
 
 roomTitles = ["Red", "Easter Bunny", "Mamba", "Egg Sandwhich", "Beast", "Gypsy", "Gems", "German Dungeon", "Gulag",
@@ -15,7 +14,7 @@ descriptions = ["You have reached the room where the magic happens", "You have r
                 "You have reached the room where you've been CURED from the coronavirus", "You have reached the room where you've been INFECTED with the coronavirus", "You have reached the room where you've been INFECTED with the coronavirus", "You have reached the room where you've been INFECTED with the coronavirus", "You have reached the room where you've been INFECTED with the coronavirus", "You have reached the room where you've been INFECTED with the coronavirus", "You have reached the room where you've met your creator", "You have reached the room where you've given up on Django", "You have reached the room where you've voted for Trump", "You have reached the room where you've voted for Bernie Sanders", "You have reached the room where you've made it to the coast"]
 
 
-class Rooms:
+class Room:
     def __init__(self, id, name, description, n_to, s_to, e_to, w_to, x, y):
         self.id = id
         self.name = name
@@ -101,53 +100,56 @@ class World:
                 y += 1
                 direction *= -1
 
-            if room_count == 0:
-                self.n_to = None
-                self.s_to = None
-                self.e_to = room_count + 1
-                self.w_to = None
-            elif (room_count + 1) % 15 == 0 and direction < 0 and room_count >= 14:
-                self.n_to = room_count+1
-                self.s_to = None
-                self.e_to = room_count - 1
-                self.w_to = None
-            elif (room_count + 1) % 15 == 0 and direction > 0 and room_count >= 14:
-                self.n_to = room_count+1
-                self.s_to = None
-                self.w_to = room_count - 1
-                self.e_to = None
-            elif room_count % 15 == 0 and direction < 0 and room_count >= 14:
-                self.s_to = room_count - 1
-                self.n_to = None
-                self.w_to = room_count + 1
-                self.e_to = None
-            elif room_count % 15 == 0 and direction > 0 and room_count >= 14:
-                self.s_to = room_count - 1
-                self.n_to = None
-                self.e_to = room_count + 1
-                self.w_to = None
-            elif direction > 0:
-                self.w_to = room_count - 1
-                self.e_to = room_count + 1
-                self.n_to = None
-                self.s_to = None
-            else:
-                self.w_to = room_count + 1
-                self.e_to = room_count - 1
-                self.n_to = None
-                self.s_to = None
+            # if room_count == 0:
+            #     self.n_to = None
+            #     self.s_to = None
+            #     self.e_to = room_count + 1
+            #     self.w_to = None
+            # elif (room_count + 1) % 15 == 0 and direction < 0 and room_count >= 14:
+            #     self.n_to = room_count+1
+            #     self.s_to = None
+            #     self.e_to = room_count - 1
+            #     self.w_to = None
+            # elif (room_count + 1) % 15 == 0 and direction > 0 and room_count >= 14:
+            #     self.n_to = room_count+1
+            #     self.s_to = None
+            #     self.w_to = room_count - 1
+            #     self.e_to = None
+            # elif room_count % 15 == 0 and direction < 0 and room_count >= 14:
+            #     self.s_to = room_count - 1
+            #     self.n_to = None
+            #     self.w_to = room_count + 1
+            #     self.e_to = None
+            # elif room_count % 15 == 0 and direction > 0 and room_count >= 14:
+            #     self.s_to = room_count - 1
+            #     self.n_to = None
+            #     self.e_to = room_count + 1
+            #     self.w_to = None
+            # elif direction > 0:
+            #     self.w_to = room_count - 1
+            #     self.e_to = room_count + 1
+            #     self.n_to = None
+            #     self.s_to = None
+            # else:
+            #     self.w_to = room_count + 1
+            #     self.e_to = room_count - 1
+            #     self.n_to = None
+            #     self.s_to = None
 
             # Create a room in the given direction
-            room = Room(id=room_count, title=random.choice(roomTitles),
-                        description=random.choice(descriptions), n_to=self.n_to,  s_to=self.s_to,  e_to=self.e_to, w_to=self.w_to, x=x, y=y)
+            room = Room(id, random.choice(roomTitles),
+                        random.choice(descriptions), self.n_to,  self.s_to, self.e_to, self.w_to, x, y)
            # print(room.n_to)
-            room.save()
+
             self.list1.append(room)
 
             # Note that in Django, you'll need to save the room after you create it
 
             # Save the room in the World grid
             self.grid[y][x] = room
+
+            if previous_room is not None:
+                previous_room.connect_rooms(room, room_direction)
 
             # Connect the new room to the previous room
             # if previous_room is not None:
@@ -159,59 +161,59 @@ class World:
         # for i in self.list1:
         #     print(i.id)
 
-#     def print_rooms(self):
-#         '''
-#         Print the rooms in room_grid in ascii characters.
-#         '''
+    def print_rooms(self):
+        '''
+        Print the rooms in room_grid in ascii characters.
+        '''
 
-#         # Add top border
-#         str = "# " * ((3 + self.width * 5) // 2) + "\n"
+        # Add top border
+        str = "# " * ((3 + self.width * 5) // 2) + "\n"
 
-#         # The console prints top to bottom but our array is arranged
-#         # bottom to top.
-#         #
-#         # We reverse it so it draws in the right direction.
-#         reverse_grid = list(self.grid)  # make a copy of the list
-#         reverse_grid.reverse()
-#         for row in reverse_grid:
-#             # PRINT NORTH CONNECTION ROW
-#             str += "#"
-#             for room in row:
-#                 if room is not None and room.n_to is not None:
-#                     str += "  |  "
-#                 else:
-#                     str += "     "
-#             str += "#\n"
-#             # PRINT ROOM ROW
-#             str += "#"
-#             for room in row:
-#                 if room is not None and room.w_to is not None:
-#                     str += "-"
-#                 else:
-#                     str += " "
-#                 if room is not None:
-#                     str += f"{room.id}".zfill(3)
-#                 else:
-#                     str += "   "
-#                 if room is not None and room.e_to is not None:
-#                     str += "-"
-#                 else:
-#                     str += " "
-#             str += "#\n"
-#             # PRINT SOUTH CONNECTION ROW
-#             str += "#"
-#             for room in row:
-#                 if room is not None and room.s_to is not None:
-#                     str += "  |  "
-#                 else:
-#                     str += "     "
-#             str += "#\n"
+        # The console prints top to bottom but our array is arranged
+        # bottom to top.
+        #
+        # We reverse it so it draws in the right direction.
+        reverse_grid = list(self.grid)  # make a copy of the list
+        reverse_grid.reverse()
+        for row in reverse_grid:
+            # PRINT NORTH CONNECTION ROW
+            str += "#"
+            for room in row:
+                if room is not None and room.n_to is not None:
+                    str += "  |  "
+                else:
+                    str += "     "
+            str += "#\n"
+            # PRINT ROOM ROW
+            str += "#"
+            for room in row:
+                if room is not None and room.w_to is not None:
+                    str += "-"
+                else:
+                    str += " "
+                if room is not None:
+                    str += f"{room.id}".zfill(3)
+                else:
+                    str += "   "
+                if room is not None and room.e_to is not None:
+                    str += "-"
+                else:
+                    str += " "
+            str += "#\n"
+            # PRINT SOUTH CONNECTION ROW
+            str += "#"
+            for room in row:
+                if room is not None and room.s_to is not None:
+                    str += "  |  "
+                else:
+                    str += "     "
+            str += "#\n"
 
-#         # Add bottom border
-#         str += "# " * ((3 + self.width * 5) // 2) + "\n"
+        # Add bottom border
+        str += "# " * ((3 + self.width * 5) // 2) + "\n"
 
-#         # Print string
-#         print(str)
+        # Print string
+        print(str)
 
 
 # print(0 % 14)
@@ -220,7 +222,7 @@ num_rooms = 100
 width = 15
 height = 7
 w.generate_rooms(width, height, num_rooms)
-# w.print_rooms()
+w.print_rooms()
 
 # for i in w.list1:
 #     #

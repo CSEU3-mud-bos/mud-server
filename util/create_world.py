@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User
-from adventure.models import Player, Room
+# from django.contrib.auth.models import User
+# from adventure.models import Player, Room
 
-print(Room)
+# print(Room)
 
 
 # Room.objects.all().delete()
@@ -46,3 +46,11 @@ print(Room)
 # for p in players:
 #   p.currentRoom=r_outside.id
 #   p.save()
+
+
+list_1 = [1, 2, 4]
+list_2 = [1, 3, 5]
+list_1.extend(list_2)
+combined = set(list_1)
+
+print(combined)
